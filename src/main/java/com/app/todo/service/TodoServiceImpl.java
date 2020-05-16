@@ -31,12 +31,12 @@ public class TodoServiceImpl implements TodoService {
 	}
 
 	@Override
-	public void delteTodo(Long id) {
+	public void deleteTodo(Long id) {
 		this.todoRepository.deleteById(id);
 	}
 
 	@Override
-	public Todo updateTodo(Todo todo, Long id) {
+	public Todo updateTodo(Todo todo) {
 		return this.todoRepository.saveAndFlush(todo);
 	}
 

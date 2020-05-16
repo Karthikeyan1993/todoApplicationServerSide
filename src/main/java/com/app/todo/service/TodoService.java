@@ -12,7 +12,7 @@ public interface TodoService {
 
 	Optional<Todo> findTodo(Long id);
 
-	void delteTodo(Long id);
+	void deleteTodo(Long id);
 
-	Todo updateTodo(Todo todo, Long id);
+	Todo updateTodo(Todo todo);
 }
