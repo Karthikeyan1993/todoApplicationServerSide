@@ -30,9 +30,8 @@ public class Todo {
 		super();
 	}
 
-	public Todo(Long id, String name, String tag, String priority, String status, Date duedate) {
+	public Todo(String name, String tag, String priority, String status, Date duedate) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.tag = tag;
 		this.priority = priority;
