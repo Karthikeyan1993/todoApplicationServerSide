@@ -2,11 +2,13 @@ package com.app.todo.controller;
 
 import com.app.todo.Exception.TodoException;
 import com.app.todo.entity.Todo;
+import com.app.todo.payload.TodoRequest;
 import com.app.todo.service.TodoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +28,9 @@ public class TodoController {
     }
 
     @GetMapping("todos")
-    public ResponseEntity<List<Todo>> getAllTodoEntity() {
+    public ResponseEntity<List<Todo>> getAllTodoEntity(Authentication authentication) {
         LOGGER.debug("Request Received For Getting All Todo Information");
-        return new ResponseEntity<>(this.todoService.getAllTodo(), HttpStatus.OK);
+        return new ResponseEntity<>(this.todoService.getAllTodo(authentication.getName()), HttpStatus.OK);
     }
 
     @GetMapping("todos/{id}")
@@ -44,8 +46,15 @@ public class TodoController {
     }
 
     @PostMapping("todo")
-    public ResponseEntity<Todo> saveTodoEntity(@RequestBody Todo todo) {
+    public ResponseEntity<Todo> saveTodoEntity(@RequestBody TodoRequest todoRequest, Authentication auth) {
         LOGGER.debug("Request Received For Save New Todo Item");
+        Todo todo = new Todo();
+        todo.setName(todoRequest.getName());
+        todo.setPriority(todoRequest.getPriority());
+        todo.setStatus(todoRequest.getStatus());
+        todo.setTag(todoRequest.getTag());
+        todo.setDuedate(todoRequest.getDuedate());
+        todo.setCreatedBy(auth.getName());
         return new ResponseEntity<>(todoService.saveTodo(todo), HttpStatus.OK);
     }
 

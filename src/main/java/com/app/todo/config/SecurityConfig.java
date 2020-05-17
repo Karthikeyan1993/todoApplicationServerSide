@@ -2,6 +2,7 @@ package com.app.todo.config;
 
 import com.app.todo.security.JWTAuthenticationFilter;
 import com.app.todo.security.JWTAuthorizationFilter;
+import com.app.todo.security.JwtTokenProvider;
 import com.app.todo.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public JwtTokenProvider jwtTokenProvider(){
+        return new JwtTokenProvider();
+    }
+
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -59,8 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(),jwtTokenProvider()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(),jwtTokenProvider()))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

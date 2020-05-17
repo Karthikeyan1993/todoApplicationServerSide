@@ -1,6 +1,6 @@
 package com.app.todo.payload;
 
-public class LoginRequest {
+public class SignInRequest {
 
     private String userNameOrEmail;
     private String password;

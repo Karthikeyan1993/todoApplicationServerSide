@@ -24,7 +24,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
     @Override
     public void run(String... args) {
         LOGGER.debug("Initial Testing Data Loaded");
-        Todo t1 = new Todo("Testing Name", "Testing", "High", "In Progress", new Date());
+        Todo t1 = new Todo("Testing Name", "Testing", "High", "In Progress", new Date(),"karukar");
         todoRepository.save(t1);
     }
 }

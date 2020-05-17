@@ -2,7 +2,6 @@ package com.app.todo.security;
 
 import com.app.todo.entity.User;
 import com.app.todo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

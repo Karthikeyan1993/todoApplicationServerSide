@@ -1,9 +1,6 @@
 package com.app.todo.security;
 
 import com.app.todo.config.SecurityConstants;
-import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,15 +12,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
-    }
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager,JwtTokenProvider jwtTokenProvider) {
+        super(authenticationManager);
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req,
@@ -46,15 +45,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(SecurityConstants.HEADER_STRING);
+        String token = getJwtFromRequest(request);
         if (token != null) {
             if (StringUtils.hasText(token) && this.jwtTokenProvider.validateToken(token)) {
                 String user = this.jwtTokenProvider.getUserNameFromJWT(token);
-                if (user != null) {
-                    return new UsernamePasswordAuthenticationToken(user, null, Collections.EMPTY_LIST);
-                }
+                if (user != null) return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             }
             return null;
+        }
+        return null;
+    }
+
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7, bearerToken.length());
         }
         return null;
     }

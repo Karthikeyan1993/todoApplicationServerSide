@@ -18,8 +18,8 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<Todo> getAllTodo() {
-        return this.todoRepository.findAll();
+    public List<Todo> getAllTodo(String username) {
+        return this.todoRepository.findByCreatedBy(username);
     }
 
     @Override

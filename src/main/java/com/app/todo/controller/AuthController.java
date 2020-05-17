@@ -3,7 +3,8 @@ package com.app.todo.controller;
 import com.app.todo.entity.User;
 import com.app.todo.payload.ApiResponse;
 import com.app.todo.payload.JwtAuthenticationResponse;
-import com.app.todo.payload.LoginRequest;
+import com.app.todo.payload.SignInRequest;
+import com.app.todo.payload.SignUpRequest;
 import com.app.todo.repository.UserRepository;
 import com.app.todo.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,12 +40,12 @@ public class AuthController {
     }
 
     @PostMapping("signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody SignInRequest signInRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUserNameOrEmail(),
-                        loginRequest.getPassword()
+                        signInRequest.getUserNameOrEmail(),
+                        signInRequest.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -53,13 +54,14 @@ public class AuthController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<ApiResponse> signUp(@RequestBody User user) {
-        if (this.userRepository.existsByUsername(user.getUsername())) {
+    public ResponseEntity<ApiResponse> signUp(@RequestBody SignUpRequest signUpRequest) {
+        if (this.userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity<>(new ApiResponse(false, "Username already exists"), HttpStatus.BAD_REQUEST);
         }
-        if (this.userRepository.existsByEmail(user.getEmail())) {
+        if (this.userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity<>(new ApiResponse(false, "Email already exists"), HttpStatus.BAD_REQUEST);
         }
+        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         this.userRepository.save(user);
         return new ResponseEntity<>(new ApiResponse(true, "User Registered Successfully"), HttpStatus.ACCEPTED);

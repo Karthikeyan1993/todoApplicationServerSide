@@ -27,17 +27,19 @@ public class Todo {
     @DateTimeFormat(pattern = "YYYY-MM-DD")
     private Date duedate;
 
+    private String createdBy;
+
     public Todo() {
         super();
     }
 
-    public Todo(String name, String tag, String priority, String status, Date duedate) {
-        super();
+    public Todo(String name, String tag, String priority, String status, Date duedate, String createdBy) {
         this.name = name;
         this.tag = tag;
         this.priority = priority;
         this.status = status;
         this.duedate = duedate;
+        this.createdBy = createdBy;
     }
 
     public Long getId() {
@@ -88,6 +90,14 @@ public class Todo {
         this.duedate = duedate;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     @Override
     public String toString() {
         return "Todo{" +
@@ -97,6 +107,7 @@ public class Todo {
                 ", priority='" + priority + '\'' +
                 ", status='" + status + '\'' +
                 ", duedate=" + duedate +
+                ", createdBy='" + createdBy + '\'' +
                 '}';
     }
 }
