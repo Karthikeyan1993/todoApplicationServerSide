@@ -65,12 +65,12 @@ public class TodoController {
     }
 
     @DeleteMapping("todo/{id}")
-    public ResponseEntity<Boolean> deleteTodo(@PathVariable Long id) throws TodoException {
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) throws TodoException {
         LOGGER.debug("Request Received To Delete Todo {}", id);
         Optional<Todo> optional = this.todoService.findTodo(id);
         if (optional.isPresent()) {
             this.todoService.deleteTodo(id);
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         } else {
             throw new TodoException("Todo does not exits");
         }

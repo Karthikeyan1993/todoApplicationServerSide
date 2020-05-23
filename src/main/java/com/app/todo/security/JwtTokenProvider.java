@@ -13,16 +13,13 @@ public class JwtTokenProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    public String generateToken(Authentication authentication) {
-
-
-        User user = ((User) authentication.getPrincipal());
+    public String generateToken(String username) {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + SecurityConstants.EXPIRATION_TIME);
 
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getUsername()))
+                .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)

@@ -50,7 +50,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) {
-        res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + this.jwtTokenProvider.generateToken(auth));
+        User user = ((User) auth.getPrincipal());
+        res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + this.jwtTokenProvider.generateToken(user.getUsername()));
     }
 
 }
