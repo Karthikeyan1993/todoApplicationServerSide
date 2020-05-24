@@ -1,9 +1,7 @@
 package com.app.todo.config;
 
-import com.app.todo.security.JWTAuthenticationFilter;
-import com.app.todo.security.JWTAuthorizationFilter;
-import com.app.todo.security.JwtTokenProvider;
-import com.app.todo.security.UserDetailsServiceImpl;
+
+import com.app.todo.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
-                .antMatchers("/api/v1/users/isUsernameExists", "/api/v1/isEmailExists")
+                .antMatchers("/api/v1/users/isUsernameExists/**", "/api/v1/isEmailExists/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

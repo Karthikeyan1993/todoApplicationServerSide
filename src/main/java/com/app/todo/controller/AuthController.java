@@ -1,5 +1,6 @@
 package com.app.todo.controller;
 
+import com.app.todo.Exception.TokenException;
 import com.app.todo.Exception.UserException;
 import com.app.todo.entity.Token;
 import com.app.todo.entity.User;
@@ -51,7 +52,15 @@ public class AuthController {
     }
 
     @PostMapping("signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody SignInRequest signInRequest) throws UserException {
+
+        User user = this.userRepository.findByUsernameOrEmail(signInRequest.getUserNameOrEmail(), signInRequest.getUserNameOrEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!user.isActive()) {
+            LOGGER.debug("User {} is not activated", user.getUsername());
+            throw new UserException("User is not activated");
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -65,17 +74,40 @@ public class AuthController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<ApiResponse> signUp(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<ApiResponse> signUp(@RequestBody SignUpRequest signUpRequest) throws MessagingException {
         if (this.userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity<>(new ApiResponse(false, "Username already exists"), HttpStatus.BAD_REQUEST);
         }
         if (this.userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity<>(new ApiResponse(false, "Email already exists"), HttpStatus.BAD_REQUEST);
         }
-        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
+        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(), false);
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         this.userRepository.save(user);
+        String token = this.tokenProvider.generateToken(user.getUsername());
+        this.tokenRepository.save(new Token(user.getUsername(), token));
+        this.mailService.sendActivationMail(user.getEmail(), token);
         return new ResponseEntity<>(new ApiResponse(true, "User Registered Successfully"), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("activateUserAccount/{token}")
+    public ResponseEntity<?> activateUserAccount(@PathVariable String token) throws UserException, TokenException {
+        Token t = this.tokenRepository.findByToken(token)
+                .orElseThrow(() -> new TokenException("Token Not Found For User"));
+        if (this.tokenProvider.validateToken(t.getToken())) {
+            User user = this.userRepository.findByUsernameOrEmail(t.getUsername(), t.getToken())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            if (user.getUsername().equals(t.getUsername())) {
+                user.setActive(true);
+                this.userRepository.saveAndFlush(user);
+                LOGGER.debug("credentials matched for user {}",user.getUsername());
+            } else {
+                throw new UserException("Token not matched with username");
+            }
+        } else {
+            throw new TokenException("Token invalid or expired");
+        }
+        return new ResponseEntity<>(new ApiResponse(true, "User account activated"), HttpStatus.OK);
     }
 
     @GetMapping("getResetPasswordLink/{email}")
@@ -98,6 +130,7 @@ public class AuthController {
             if (user.getUsername().equals(token.getUsername())) {
                 user.setPassword(this.bCryptPasswordEncoder.encode(request.getPassword()));
                 this.userRepository.saveAndFlush(user);
+                LOGGER.debug("credentials matched for user {}",user.getUsername());
                 return new ResponseEntity<>(new ApiResponse(true, "Password changed successfully"), HttpStatus.OK);
             }
         }

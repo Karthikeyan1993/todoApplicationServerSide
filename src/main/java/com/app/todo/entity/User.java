@@ -15,17 +15,21 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private Boolean isActive;
+
+
 
     public User() {
         super();
     }
 
-    public User(String username, String email, String password) {
-        super();
+    public User(String username, String email, String password, boolean isActive) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isActive = isActive;
     }
+
 
     public Long getId() {
         return id;
@@ -59,6 +63,14 @@ public class User {
         this.password = password;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -66,6 +78,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", isActive=" + isActive +
                 '}';
     }
 }

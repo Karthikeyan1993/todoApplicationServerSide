@@ -24,9 +24,26 @@ public class MailServiceImpl implements MailService {
         helper.setTo(new String[]{email});
         msg.setSubject("Password Reset Link - MyTodo");
         String builder = "<p>You told us you forgot your password. If you really did use below link to reset your password.</p>" +
-                "<p>Click here to reset the password <a href=" + "http://localhost:4200/forgot-password?token=" + token + ">Click here</a></p>" +
+                "<p>Click here to reset the password <a href=" + "http://localhost:4200/reset?token=" + token + ">Click here</a></p>" +
                 "<p>If you didn't mean to reset your password, then you can just ignore this email;your password will not change</p>";
         msg.setText(builder);
         javaMailSender.send(msg);
+    }
+
+    @Override
+    public void sendActivationMail(String email, String token) throws MessagingException {
+        MimeMessage msg = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+        helper.setFrom("noreply@angular-bull.com");
+        helper.setTo(new String[]{email});
+        msg.setSubject("Activate Your Account - MyTodo");
+        String builder = "<p>Thanks for registering, You're account is almost ready.</p>" +
+                "<p>To activate your account please click the below link.</p>" +
+                "<p>Activation Link <a href=http://localhost:4200/activate?token=" + token + ">Click here</a></p>" +
+                "<p>Best Regards,</p>" +
+                "<p><img src='https://avatars1.githubusercontent.com/u/27134751?s=460&u=bb85057bab39a2bca8208605f2553a5233f792e9&v=4' width='80' height='80'></p>";
+        msg.setText(builder);
+        javaMailSender.send(msg);
+
     }
 }
