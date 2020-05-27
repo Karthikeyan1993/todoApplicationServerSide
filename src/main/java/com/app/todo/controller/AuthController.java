@@ -112,7 +112,7 @@ public class AuthController {
 
     @GetMapping("getResetPasswordLink/{email}")
     public ResponseEntity<?> sendResetPasswordLink(@PathVariable String email) throws MessagingException {
-        User user = this.userRepository.findByEmail(email)
+        User user = this.userRepository.findByUsernameOrEmail(email,email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String token = this.tokenProvider.generateToken(user.getUsername());
         this.tokenRepository.save(new Token(user.getUsername(), token));

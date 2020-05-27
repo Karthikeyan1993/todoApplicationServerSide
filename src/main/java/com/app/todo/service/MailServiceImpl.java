@@ -24,7 +24,7 @@ public class MailServiceImpl implements MailService {
         helper.setTo(new String[]{email});
         msg.setSubject("Password Reset Link - MyTodo");
         String builder = "<p>You told us you forgot your password. If you really did use below link to reset your password.</p>" +
-                "<p>Click here to reset the password <a href=" + "http://localhost:4200/reset?token=" + token + ">Click here</a></p>" +
+                "<p>Click here to reset the password <a href=" + "http://localhost:4200/forgot?token=" + token + ">Click here</a></p>" +
                 "<p>If you didn't mean to reset your password, then you can just ignore this email;your password will not change</p>";
         msg.setText(builder);
         javaMailSender.send(msg);
