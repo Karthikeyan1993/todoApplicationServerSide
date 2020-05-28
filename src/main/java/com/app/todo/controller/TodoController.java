@@ -70,7 +70,7 @@ public class TodoController {
         Optional<Todo> optional = this.todoService.findTodo(id);
         if (optional.isPresent()) {
             this.todoService.deleteTodo(id);
-            return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             throw new TodoException("Todo does not exits");
         }

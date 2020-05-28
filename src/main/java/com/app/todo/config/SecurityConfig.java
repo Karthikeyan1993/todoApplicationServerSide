@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**")
                 .permitAll()
-                .antMatchers("/api/v1/users/isUsernameExists/**", "/api/v1/isEmailExists/**")
+                .antMatchers("/api/v1/users/isUsernameExists/**", "/api/v1/users/isEmailExists/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
