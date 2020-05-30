@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.app.todo.entity.Todo;
 
 public interface TodoService {
-	List<Todo> getAllTodo();
+	List<Todo> getAllTodo(String username);
 
 	Todo saveTodo(Todo todo);
 

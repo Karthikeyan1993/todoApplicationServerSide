@@ -1,43 +1,45 @@
 package com.app.todo.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.app.todo.entity.Todo;
 import com.app.todo.repository.TodoRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service("todoService")
 public class TodoServiceImpl implements TodoService {
 
-	@Autowired
-	private TodoRepository todoRepository;
+    private final TodoRepository todoRepository;
 
-	@Override
-	public List<Todo> getAllTodo() {
-		return this.todoRepository.findAll();
-	}
+    public TodoServiceImpl(@Qualifier("todoRepository") TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
 
-	@Override
-	public Todo saveTodo(Todo todo) {
-		return this.todoRepository.save(todo);
-	}
+    @Override
+    public List<Todo> getAllTodo(String username) {
+        return this.todoRepository.findByCreatedBy(username);
+    }
 
-	@Override
-	public Optional<Todo> findTodo(Long id) {
-		return this.todoRepository.findById(id);
-	}
+    @Override
+    public Todo saveTodo(Todo todo) {
+        return this.todoRepository.save(todo);
+    }
 
-	@Override
-	public void deleteTodo(Long id) {
-		this.todoRepository.deleteById(id);
-	}
+    @Override
+    public Optional<Todo> findTodo(Long id) {
+        return this.todoRepository.findById(id);
+    }
 
-	@Override
-	public Todo updateTodo(Todo todo) {
-		return this.todoRepository.saveAndFlush(todo);
-	}
+    @Override
+    public void deleteTodo(Long id) {
+        this.todoRepository.deleteById(id);
+    }
+
+    @Override
+    public Todo updateTodo(Todo todo) {
+        return this.todoRepository.saveAndFlush(todo);
+    }
 
 }

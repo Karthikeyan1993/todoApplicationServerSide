@@ -7,20 +7,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-	@ExceptionHandler(TodoException.class)
-	public ResponseEntity<ErrorResponse> exceptionToDoException(Exception ex) {
-		ErrorResponse error = new ErrorResponse();
-		error.setErrorCode(HttpStatus.NOT_FOUND.value());
-		error.setMessage(ex.getMessage());
-		return new ResponseEntity<ErrorResponse>(error, HttpStatus.NOT_FOUND);
-	}
+    @ExceptionHandler(TodoException.class)
+    public ResponseEntity<ErrorResponse> exceptionToDoException(Exception ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode(HttpStatus.NOT_FOUND.value());
+        error.setMessage(ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
-		ErrorResponse error = new ErrorResponse();
-		error.setErrorCode(HttpStatus.BAD_REQUEST.value());
-		error.setMessage("The request could not be understood by the server due to malformed syntax.");
-		return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
-	}
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exceptionHandler() {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode(HttpStatus.BAD_REQUEST.value());
+        error.setMessage("The request could not be understood by the server due to invalid credentials.");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 }

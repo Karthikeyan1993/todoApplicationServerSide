@@ -6,7 +6,6 @@ public class ErrorResponse {
 	
 	public ErrorResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public ErrorResponse(int errorCode, String message) {
 		super();
