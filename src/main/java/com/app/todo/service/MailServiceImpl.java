@@ -20,7 +20,7 @@ public class MailServiceImpl implements MailService {
     public void sendForgotPasswordMail(String email, String token) throws MessagingException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setFrom("noreply@angular-bull.com");
+        helper.setFrom("karthik.infotec98@gmail.com");
         helper.setTo(new String[]{email});
         msg.setSubject("Password Reset Link - MyTodo");
         String builder = "<p>You told us you forgot your password. If you really did use below link to reset your password.</p>" +
@@ -34,7 +34,7 @@ public class MailServiceImpl implements MailService {
     public void sendActivationMail(String email, String token) throws MessagingException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setFrom("noreply@angular-bull.com");
+        helper.setFrom("karthik.infotec98@gmail.com");
         helper.setTo(new String[]{email});
         msg.setSubject("Activate Your Account - MyTodo");
         String builder = "<p>Thanks for registering, You're account is almost ready.</p>" +
