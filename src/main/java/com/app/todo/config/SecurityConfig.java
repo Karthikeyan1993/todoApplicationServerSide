@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/v1/users/isUsernameExists/**", "/api/v1/users/isEmailExists/**")
                 .permitAll()
-                .anyRequest()
+                .antMatchers("/api/**")
                 .authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(),jwtTokenProvider()))
@@ -77,6 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/v2/api-docs",
+                "/resources/**",
                 "/configuration/ui",
                 "/swagger-resources/**",
                 "/configuration/security",
