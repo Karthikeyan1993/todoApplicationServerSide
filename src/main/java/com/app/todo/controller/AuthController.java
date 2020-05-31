@@ -57,11 +57,13 @@ public class AuthController {
         User user = this.userRepository.findByUsernameOrEmail(signInRequest.getUserNameOrEmail(), signInRequest.getUserNameOrEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (!user.isActive()) {
-            LOGGER.debug("User {} is not activated", user.getUsername());
-            throw new UserException("User is not activated");
+        if (!this.bCryptPasswordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {
+            throw new UserException("Invalid user credentials");
         }
 
+        if (!user.isActive()) {
+            throw new UserException("User account is not activated");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         signInRequest.getUserNameOrEmail(),
@@ -70,6 +72,7 @@ public class AuthController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication.getName());
+        LOGGER.info("User authenticated successfully and token generated {}", jwt);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
@@ -100,7 +103,7 @@ public class AuthController {
             if (user.getUsername().equals(t.getUsername())) {
                 user.setActive(true);
                 this.userRepository.saveAndFlush(user);
-                LOGGER.debug("credentials matched for user {}",user.getUsername());
+                LOGGER.debug("credentials matched for user {}", user.getUsername());
             } else {
                 throw new UserException("Token not matched with username");
             }
@@ -111,9 +114,12 @@ public class AuthController {
     }
 
     @GetMapping("getResetPasswordLink/{email}")
-    public ResponseEntity<?> sendResetPasswordLink(@PathVariable String email) throws MessagingException {
-        User user = this.userRepository.findByUsernameOrEmail(email,email)
+    public ResponseEntity<?> sendResetPasswordLink(@PathVariable String email) throws MessagingException, UserException {
+        User user = this.userRepository.findByUsernameOrEmail(email, email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!user.isActive()) {
+            throw new UserException("User account is not activated");
+        }
         String token = this.tokenProvider.generateToken(user.getUsername());
         this.tokenRepository.save(new Token(user.getUsername(), token));
         this.mailService.sendForgotPasswordMail(user.getEmail(), token);
@@ -125,12 +131,12 @@ public class AuthController {
         User user = this.userRepository.findByUsernameOrEmail(request.getUserNameOrEmail(), request.getUserNameOrEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Token token = this.tokenRepository.findByToken(request.getToken())
-                .orElseThrow(() -> new UserException("Token Not Found For User"));
+                .orElseThrow(() -> new UserException("Token not found for user,Please contact administrator"));
         if (this.tokenProvider.validateToken(token.getToken())) {
             if (user.getUsername().equals(token.getUsername())) {
                 user.setPassword(this.bCryptPasswordEncoder.encode(request.getPassword()));
                 this.userRepository.saveAndFlush(user);
-                LOGGER.debug("credentials matched for user {}",user.getUsername());
+                LOGGER.debug("credentials matched for user {}", user.getUsername());
                 return new ResponseEntity<>(new ApiResponse(true, "Password changed successfully"), HttpStatus.OK);
             }
         }
