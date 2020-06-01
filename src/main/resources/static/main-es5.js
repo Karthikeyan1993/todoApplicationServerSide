@@ -3242,7 +3242,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       selectors: [["app-page-not-found"]],
       decls: 2,
       vars: 0,
-      consts: [[1, "login-section", "container-center"], ["src", "/assets/http-404.png", "height", "400", "width", "600", "alt", ""]],
+      consts: [[1, "login-section", "container-center"], ["src", "./assets/http-404.png", "height", "400", "width", "600", "alt", ""]],
       template: function PageNotFoundComponent_Template(rf, ctx) {
         if (rf & 1) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
