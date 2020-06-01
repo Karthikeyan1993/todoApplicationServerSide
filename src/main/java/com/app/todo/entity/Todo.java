@@ -9,9 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Todo {
 
     @Id
@@ -28,86 +33,4 @@ public class Todo {
     private Date duedate;
 
     private String createdBy;
-
-    public Todo() {
-        super();
-    }
-
-    public Todo(String name, String tag, String priority, String status, Date duedate, String createdBy) {
-        this.name = name;
-        this.tag = tag;
-        this.priority = priority;
-        this.status = status;
-        this.duedate = duedate;
-        this.createdBy = createdBy;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getDuedate() {
-        return duedate;
-    }
-
-    public void setDuedate(Date duedate) {
-        this.duedate = duedate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Override
-    public String toString() {
-        return "Todo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", tag='" + tag + '\'' +
-                ", priority='" + priority + '\'' +
-                ", status='" + status + '\'' +
-                ", duedate=" + duedate +
-                ", createdBy='" + createdBy + '\'' +
-                '}';
-    }
 }

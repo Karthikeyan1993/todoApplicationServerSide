@@ -61,7 +61,7 @@ public class AuthController {
             throw new UserException("Invalid user credentials");
         }
 
-        if (!user.isActive()) {
+        if (!user.getIsActive()) {
             throw new UserException("User account is not activated");
         }
         Authentication authentication = authenticationManager.authenticate(
@@ -73,7 +73,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication.getName());
         LOGGER.info("User authenticated successfully and token generated {}", jwt);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt,"Bearer"));
     }
 
     @PostMapping("signup")
@@ -84,11 +84,11 @@ public class AuthController {
         if (this.userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity<>(new ApiResponse(false, "Email already exists"), HttpStatus.BAD_REQUEST);
         }
-        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(), false);
+        User user = new User(Long.valueOf('0'),signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(), false);
         user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         this.userRepository.save(user);
         String token = this.tokenProvider.generateToken(user.getUsername());
-        this.tokenRepository.save(new Token(user.getUsername(), token));
+        this.tokenRepository.save(new Token(Long.valueOf('0'),user.getUsername(), token));
         this.mailService.sendActivationMail(user.getEmail(), token);
         return new ResponseEntity<>(new ApiResponse(true, "User Registered Successfully"), HttpStatus.ACCEPTED);
     }
@@ -101,7 +101,7 @@ public class AuthController {
             User user = this.userRepository.findByUsernameOrEmail(t.getUsername(), t.getToken())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             if (user.getUsername().equals(t.getUsername())) {
-                user.setActive(true);
+                user.setIsActive(true);
                 this.userRepository.saveAndFlush(user);
                 LOGGER.debug("credentials matched for user {}", user.getUsername());
             } else {
@@ -117,11 +117,11 @@ public class AuthController {
     public ResponseEntity<?> sendResetPasswordLink(@PathVariable String email) throws MessagingException, UserException {
         User user = this.userRepository.findByUsernameOrEmail(email, email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!user.isActive()) {
+        if (!user.getIsActive()) {
             throw new UserException("User account is not activated");
         }
         String token = this.tokenProvider.generateToken(user.getUsername());
-        this.tokenRepository.save(new Token(user.getUsername(), token));
+        this.tokenRepository.save(new Token(Long.valueOf('0'),user.getUsername(), token));
         this.mailService.sendForgotPasswordMail(user.getEmail(), token);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }

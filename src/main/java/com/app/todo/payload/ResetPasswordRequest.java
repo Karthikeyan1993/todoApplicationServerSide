@@ -1,32 +1,14 @@
 
 package com.app.todo.payload;
 
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class ResetPasswordRequest {
     private String userNameOrEmail;
     private String password;
     private String token;
-
-    public String getUserNameOrEmail() {
-        return userNameOrEmail;
-    }
-
-    public void setUserNameOrEmail(String userNameOrEmail) {
-        this.userNameOrEmail = userNameOrEmail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }
