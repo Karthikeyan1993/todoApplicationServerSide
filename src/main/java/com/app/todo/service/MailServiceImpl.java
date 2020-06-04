@@ -27,7 +27,7 @@ public class MailServiceImpl implements MailService {
     public void sendForgotPasswordMail(String email, String token) throws MessagingException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setFrom("karthik.infotec99@gmail.com");
+        helper.setFrom("mytodo.ngboy@gmail.com");
         helper.setTo(new String[]{email});
         msg.setSubject("Password Reset Link - MyTodo");
         String builder = "<p>You told us you forgot your password. If you really did use below link to reset your password.</p>" +
@@ -35,7 +35,7 @@ public class MailServiceImpl implements MailService {
                 "<p>If you didn't mean to reset your password, then you can just ignore this email;your password will not change</p>"
         + "<p>Best Regards,</p>" +
                 "<p><img src='https://avatars1.githubusercontent.com/u/27134751?s=460&u=bb85057bab39a2bca8208605f2553a5233f792e9&v=4' width='80' height='80'></p>";
-        msg.setText(builder);
+        msg.setContent(builder.toString(),"text/html; charset=utf-8");
         javaMailSender.send(msg);
     }
 
@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService {
     public void sendActivationMail(String email, String token) throws MessagingException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setFrom("karthik.infotec99@gmail.com");
+        helper.setFrom("mytodo.ngboy@gmail.com");
         helper.setTo(new String[]{email});
         msg.setSubject("Activate Your Account - MyTodo");
         String builder = "<p>Thanks for registering, You're account is almost ready.</p>" +
@@ -51,7 +51,7 @@ public class MailServiceImpl implements MailService {
                 "<p>Activation Link <a href=" + this.UI_BASE_URL_PROD +"activate?token=" + token + ">Click here</a></p>" +
                 "<p>Best Regards,</p>" +
                 "<p><img src='https://avatars1.githubusercontent.com/u/27134751?s=460&u=bb85057bab39a2bca8208605f2553a5233f792e9&v=4' width='80' height='80'></p>";
-        msg.setText(builder);
+        msg.setContent(builder.toString(),"text/html; charset=utf-8");
         javaMailSender.send(msg);
 
     }
@@ -60,7 +60,7 @@ public class MailServiceImpl implements MailService {
     public void sendOverdueMail(String email, List<Todo> todoLists) throws MessagingException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setFrom("karthik.infotec99@gmail.com");
+        helper.setFrom("mytodo.ngboy@gmail.com");
         helper.setTo(new String[]{email});
         msg.setSubject("MyTodo - Task Over Due Notification");
         StringBuilder builder = new StringBuilder();
@@ -82,7 +82,7 @@ public class MailServiceImpl implements MailService {
         builder.append("<p>Please complete it the task as soon as possible</p>");
         builder.append("<p>Best Regards,</p>");
         builder.append("<p><img src='https://avatars1.githubusercontent.com/u/27134751?s=460&u=bb85057bab39a2bca8208605f2553a5233f792e9&v=4' width='80' height='80'></p>");
-        msg.setText(builder.toString());
+        msg.setContent(builder.toString(),"text/html; charset=utf-8");
         javaMailSender.send(msg);
     }
 }
