@@ -82,7 +82,7 @@ public class Scheduler {
     }
 
     private List<Todo> filterOverdueItem(List<Todo> items) {
-        return items.parallelStream().filter(e -> compareDate(e.getDuedate()))
+        return items.parallelStream().filter(e -> compareDate(e.getDuedate()) && !e.getStatus().equals("Completed"))
                 .collect(Collectors.toList());
     }
 
