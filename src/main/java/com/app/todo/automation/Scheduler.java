@@ -36,7 +36,8 @@ public class Scheduler {
         this.mailService = mailService;
     }
     
-    @Scheduled(cron = "0 0 0/12 * * ?")
+//     @Scheduled(cron = "0 0 0/12 * * ?")
+    @Scheduled(cron = "* * * * * *")
     public void cornJob() throws Exception {
         LOGGER.info("Job Started At {}", new Date());
         process(this.todoRepository.findAll());
